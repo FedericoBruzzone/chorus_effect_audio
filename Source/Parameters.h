@@ -1,3 +1,4 @@
+//Chorus_effectAudioProcessor
 #pragma once
 #include <JuceHeader.h>
 

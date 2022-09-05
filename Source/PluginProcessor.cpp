@@ -1,191 +1,119 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
+#include "Parameters.h"
 #include "PluginEditor.h"
 
-//==============================================================================
-Chorus_effectAudioProcessor::Chorus_effectAudioProcessor()
-#ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       )
-#endif
+DelayFXAudioProcessor::DelayFXAudioProcessor()
+    : parameters(*this, nullptr, "DelayFXParameters", Parameters::createParameterLayout())
 {
+    parameters.addParameterListener(NAME_DW, this);
+    parameters.addParameterListener(NAME_DT, this);
+    parameters.addParameterListener(NAME_FB, this);
+    parameters.addParameterListener(NAME_FREQ, this);
+    parameters.addParameterListener(NAME_MOD, this);
+    parameters.addParameterListener(NAME_WF, this);
+
+    delay.setFeedback(DEFAULT_FB);
+    //delay.setTime(DEFAULT_DT);
+    drywetter.setDryWetRatio(DEFAULT_DW);
+    LFO.setFrequency(DEFAULT_FREQ);
+    LFO.setWaveform(DEFAULT_WF);
+    timeAdapter.setModAmount(DEFAULT_MOD);
+    timeAdapter.setParameter(DEFAULT_DT);
 }
 
-Chorus_effectAudioProcessor::~Chorus_effectAudioProcessor()
-{
-}
-
-//==============================================================================
-const juce::String Chorus_effectAudioProcessor::getName() const
-{
-    return JucePlugin_Name;
-}
-
-bool Chorus_effectAudioProcessor::acceptsMidi() const
-{
-   #if JucePlugin_WantsMidiInput
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-bool Chorus_effectAudioProcessor::producesMidi() const
-{
-   #if JucePlugin_ProducesMidiOutput
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-bool Chorus_effectAudioProcessor::isMidiEffect() const
-{
-   #if JucePlugin_IsMidiEffect
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-double Chorus_effectAudioProcessor::getTailLengthSeconds() const
-{
-    return 0.0;
-}
-
-int Chorus_effectAudioProcessor::getNumPrograms()
-{
-    return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
-                // so this should be at least 1, even if you're not really implementing programs.
-}
-
-int Chorus_effectAudioProcessor::getCurrentProgram()
-{
-    return 0;
-}
-
-void Chorus_effectAudioProcessor::setCurrentProgram (int index)
-{
-}
-
-const juce::String Chorus_effectAudioProcessor::getProgramName (int index)
-{
-    return {};
-}
-
-void Chorus_effectAudioProcessor::changeProgramName (int index, const juce::String& newName)
+DelayFXAudioProcessor::~DelayFXAudioProcessor()
 {
 }
 
 //==============================================================================
-void Chorus_effectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void DelayFXAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    drywetter.prepareToPlay(sampleRate, samplesPerBlock);
+    delay.prepareToPlay(sampleRate, samplesPerBlock);
+    LFO.prepareToPlay(sampleRate);
+    modulationSignal.setSize(2, samplesPerBlock);
+    timeAdapter.prepareToPlay(sampleRate);
 }
 
-void Chorus_effectAudioProcessor::releaseResources()
+void DelayFXAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
+    drywetter.releaseResources();
+    delay.releaseResurces();
+    modulationSignal.setSize(0, 0);
 }
 
-#ifndef JucePlugin_PreferredChannelConfigurations
-bool Chorus_effectAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
-{
-  #if JucePlugin_IsMidiEffect
-    juce::ignoreUnused (layouts);
-    return true;
-  #else
-    // This is the place where you check if the layout is supported.
-    // In this template code we only support mono or stereo.
-    // Some plugin hosts, such as certain GarageBand versions, will only
-    // load plugins that support stereo bus layouts.
-    if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
-     && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
-        return false;
-
-    // This checks if the input layout matches the output layout
-   #if ! JucePlugin_IsSynth
-    if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
-        return false;
-   #endif
-
-    return true;
-  #endif
-}
-#endif
-
-void Chorus_effectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void DelayFXAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
+    const auto numSamples = buffer.getNumSamples();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
+    // Genero una modulante
+    LFO.getNextAudioBlock(modulationSignal, numSamples);
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
+    // Scalare modulante
+    timeAdapter.processBlock(modulationSignal, numSamples);
 
-        // ..do something to the data...
-    }
+    // Salvo il segnale in input pulito
+    drywetter.setDry(buffer);
+
+    // Applicare delay
+    //delay.processBlock(buffer);
+    delay.processBlock(buffer, modulationSignal);
+    
+    // Miscelo il segnale pulito salvato in drywetter con quello processato da delay
+    drywetter.merge(buffer);
+
+    // ~~~ Listen to the wavez ~~~
+    //LFO.getNextAudioBlock(buffer, buffer.getNumSamples());
+}
+
+
+juce::AudioProcessorEditor* DelayFXAudioProcessor::createEditor()
+{
+    return new PluginEditor(*this, parameters);
 }
 
 //==============================================================================
-bool Chorus_effectAudioProcessor::hasEditor() const
+void DelayFXAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    return true; // (change this to false if you choose to not supply an editor)
+    auto state = parameters.copyState();
+    std::unique_ptr<XmlElement> xml(state.createXml());
+    copyXmlToBinary(*xml, destData);
 }
 
-juce::AudioProcessorEditor* Chorus_effectAudioProcessor::createEditor()
+void DelayFXAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    return new Chorus_effectAudioProcessorEditor (*this);
+    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName(parameters.state.getType()))
+            parameters.replaceState(ValueTree::fromXml(*xmlState));
 }
 
-//==============================================================================
-void Chorus_effectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void DelayFXAudioProcessor::parameterChanged(const String& paramID, float newValue)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
-}
+    if (paramID == NAME_DW)
+        drywetter.setDryWetRatio(newValue);
 
-void Chorus_effectAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
-{
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    if (paramID == NAME_DT)
+        timeAdapter.setParameter(newValue);
+        //delay.setTime(newValue);
+
+    if (paramID == NAME_FB)
+        delay.setFeedback(newValue);
+
+    if (paramID == NAME_FREQ)
+        LFO.setFrequency(newValue);
+
+    if (paramID == NAME_MOD)
+        timeAdapter.setModAmount(newValue);
+
+    if (paramID == NAME_WF)
+        LFO.setWaveform(newValue);
 }
 
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new Chorus_effectAudioProcessor();
+    return new DelayFXAudioProcessor();
 }
