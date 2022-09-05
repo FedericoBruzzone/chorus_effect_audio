@@ -6,14 +6,22 @@
               userNotes="C:\Users\belvs\Documents\JUCE\extras\AudioPluginHost\Builds\VisualStudio2022\x64\Release\App\AudioPluginHost.exe">
   <MAINGROUP id="XWlAqg" name="chorus_effect">
     <GROUP id="{D264116B-0FC9-B99E-0EAB-5CFFC62A2821}" name="Source">
-      <FILE id="D8zJh5" name="PluginProcessor.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor.cpp"/>
-      <FILE id="ULBMnD" name="PluginProcessor.h" compile="0" resource="0"
-            file="Source/PluginProcessor.h"/>
-      <FILE id="dTG280" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="uMFHdn" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <GROUP id="{2CC2340B-B585-9506-42B0-58F1295D79BC}" name="GUI">
+        <FILE id="N228kg" name="MyTheme.h" compile="0" resource="0" file="Source/GUI/MyTheme.h"/>
+        <FILE id="kL7AHJ" name="PluginEditor.cpp" compile="1" resource="0"
+              file="Source/GUI/PluginEditor.cpp"/>
+        <FILE id="SR6U1U" name="PluginEditor.h" compile="0" resource="0" file="Source/GUI/PluginEditor.h"/>
+      </GROUP>
+      <GROUP id="{FD3EB0B9-33A4-2486-1A6B-43756CA541C7}" name="DSP">
+        <FILE id="znzorl" name="Delays.h" compile="0" resource="0" file="Source/DSP/Delays.h"/>
+        <FILE id="v4SYSl" name="DryWet.h" compile="0" resource="0" file="Source/DSP/DryWet.h"/>
+      </GROUP>
     </GROUP>
+    <FILE id="ppCEnv" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
+    <FILE id="MR7BTU" name="PluginProcessor.cpp" compile="1" resource="0"
+          file="Source/PluginProcessor.cpp"/>
+    <FILE id="nR8mGo" name="PluginProcessor.h" compile="0" resource="0"
+          file="Source/PluginProcessor.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
