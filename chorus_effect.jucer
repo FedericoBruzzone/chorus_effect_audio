@@ -5,22 +5,22 @@
               pluginManufacturerCode="RDL!" pluginChannelConfigs="{1,1},{2,2}"
               userNotes="C:\Users\belvs\Documents\JUCE\extras\AudioPluginHost\Builds\VisualStudio2022\x64\Release\App\AudioPluginHost.exe">
   <MAINGROUP id="XWlAqg" name="chorus_effect">
-    <GROUP id="{D264116B-0FC9-B99E-0EAB-5CFFC62A2821}" name="Source">
-      <GROUP id="{2CC2340B-B585-9506-42B0-58F1295D79BC}" name="GUI">
-        <FILE id="N228kg" name="MyTheme.h" compile="0" resource="0" file="Source/GUI/MyTheme.h"/>
-        <FILE id="kL7AHJ" name="PluginEditor.cpp" compile="1" resource="0"
-              file="Source/GUI/PluginEditor.cpp"/>
-        <FILE id="SR6U1U" name="PluginEditor.h" compile="0" resource="0" file="Source/GUI/PluginEditor.h"/>
-      </GROUP>
-      <GROUP id="{FD3EB0B9-33A4-2486-1A6B-43756CA541C7}" name="DSP">
-        <FILE id="znzorl" name="Delays.h" compile="0" resource="0" file="Source/DSP/Delays.h"/>
-        <FILE id="v4SYSl" name="DryWet.h" compile="0" resource="0" file="Source/DSP/DryWet.h"/>
-      </GROUP>
+    <GROUP id="{D264116B-0FC9-B99E-0EAB-5CFFC62A2821}" name="Source"/>
+    <GROUP id="{13967C74-4416-6E3C-4FF5-908BEE83B116}" name="DSP">
+      <FILE id="Qp4Twy" name="Delays.h" compile="0" resource="0" file="Source/DSP/Delays.h"/>
+      <FILE id="TDTVmL" name="DryWet.h" compile="0" resource="0" file="Source/DSP/DryWet.h"/>
+      <FILE id="HDUq8W" name="Oscillators.h" compile="0" resource="0" file="Source/DSP/Oscillators.h"/>
     </GROUP>
-    <FILE id="ppCEnv" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
-    <FILE id="MR7BTU" name="PluginProcessor.cpp" compile="1" resource="0"
+    <GROUP id="{22712241-DCBA-0D48-A634-0011F903F93C}" name="GUI">
+      <FILE id="WLRflS" name="MyTheme.h" compile="0" resource="0" file="Source/GUI/MyTheme.h"/>
+      <FILE id="WTVzI2" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/GUI/PluginEditor.cpp"/>
+      <FILE id="hG8E1h" name="PluginEditor.h" compile="0" resource="0" file="Source/GUI/PluginEditor.h"/>
+    </GROUP>
+    <FILE id="KMDcBc" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
+    <FILE id="PFKwbp" name="PluginProcessor.cpp" compile="1" resource="0"
           file="Source/PluginProcessor.cpp"/>
-    <FILE id="nR8mGo" name="PluginProcessor.h" compile="0" resource="0"
+    <FILE id="aLVj2i" name="PluginProcessor.h" compile="0" resource="0"
           file="Source/PluginProcessor.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

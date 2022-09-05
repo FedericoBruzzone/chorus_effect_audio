@@ -1,8 +1,8 @@
 #include "PluginProcessor.h"
 #include "Parameters.h"
-#include "PluginEditor.h"
+//#include "PluginEditor.h"
 
-DelayFXAudioProcessor::DelayFXAudioProcessor()
+Chorus_effectAudioProcessor::Chorus_effectAudioProcessor()
     : parameters(*this, nullptr, "DelayFXParameters", Parameters::createParameterLayout())
 {
     parameters.addParameterListener(NAME_DW, this);
@@ -21,12 +21,12 @@ DelayFXAudioProcessor::DelayFXAudioProcessor()
     timeAdapter.setParameter(DEFAULT_DT);
 }
 
-DelayFXAudioProcessor::~DelayFXAudioProcessor()
+Chorus_effectAudioProcessor::~Chorus_effectAudioProcessor()
 {
 }
 
 //==============================================================================
-void DelayFXAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void Chorus_effectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     drywetter.prepareToPlay(sampleRate, samplesPerBlock);
     delay.prepareToPlay(sampleRate, samplesPerBlock);
@@ -35,14 +35,14 @@ void DelayFXAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     timeAdapter.prepareToPlay(sampleRate);
 }
 
-void DelayFXAudioProcessor::releaseResources()
+void Chorus_effectAudioProcessor::releaseResources()
 {
     drywetter.releaseResources();
     delay.releaseResurces();
     modulationSignal.setSize(0, 0);
 }
 
-void DelayFXAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void Chorus_effectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
     const auto numSamples = buffer.getNumSamples();
@@ -68,20 +68,20 @@ void DelayFXAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 }
 
 
-juce::AudioProcessorEditor* DelayFXAudioProcessor::createEditor()
+juce::AudioProcessorEditor* Chorus_effectAudioProcessor::createEditor()
 {
-    return new PluginEditor(*this, parameters);
+    return nullptr;//new PluginEditor(*this, parameters);
 }
 
 //==============================================================================
-void DelayFXAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void Chorus_effectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     auto state = parameters.copyState();
     std::unique_ptr<XmlElement> xml(state.createXml());
     copyXmlToBinary(*xml, destData);
 }
 
-void DelayFXAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void Chorus_effectAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState.get() != nullptr)
@@ -89,7 +89,7 @@ void DelayFXAudioProcessor::setStateInformation (const void* data, int sizeInByt
             parameters.replaceState(ValueTree::fromXml(*xmlState));
 }
 
-void DelayFXAudioProcessor::parameterChanged(const String& paramID, float newValue)
+void Chorus_effectAudioProcessor::parameterChanged(const String& paramID, float newValue)
 {
     if (paramID == NAME_DW)
         drywetter.setDryWetRatio(newValue);
@@ -115,5 +115,5 @@ void DelayFXAudioProcessor::parameterChanged(const String& paramID, float newVal
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new DelayFXAudioProcessor();
+    return new Chorus_effectAudioProcessor();
 }

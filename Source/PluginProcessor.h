@@ -1,15 +1,15 @@
 #pragma once
 #include <JuceHeader.h>
-#include "DryWet.h"
-#include "Delays.h"
-#include "Oscillators.h"
+#include "./DSP/DryWet.h"
+#include "./DSP/Delays.h"
+#include "./DSP/Oscillators.h"
 
-class DelayFXAudioProcessor  : public juce::AudioProcessor, public AudioProcessorValueTreeState::Listener
+class Chorus_effectAudioProcessor : public juce::AudioProcessor, public AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
-    DelayFXAudioProcessor();
-    ~DelayFXAudioProcessor() override;
+    Chorus_effectAudioProcessor();
+    ~Chorus_effectAudioProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -19,7 +19,7 @@ public:
 
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
-    bool hasEditor() const override { return true; }
+    bool hasEditor() const override { return false; }
 
     //==============================================================================
     const juce::String getName() const override { return JucePlugin_Name; }
@@ -56,5 +56,5 @@ private:
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayFXAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Chorus_effectAudioProcessor)
 };
