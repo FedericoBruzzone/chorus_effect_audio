@@ -45,10 +45,9 @@ private:
 
     AudioProcessorValueTreeState parameters;
 
-    DryWet drywetter;
-    //DelayBlock delay;
-    //AnalogDelay delay;
+    DryWet drywet;
     ModDelay delay;
+    
     NaiveOscillator LFO;
     ParametrModulation timeAdapter;
 

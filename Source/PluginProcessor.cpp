@@ -7,28 +7,26 @@ Chorus_effectAudioProcessor::Chorus_effectAudioProcessor()
 {
     parameters.addParameterListener(NAME_DW, this);
     parameters.addParameterListener(NAME_DT, this);
-    parameters.addParameterListener(NAME_FB, this);
     parameters.addParameterListener(NAME_FREQ, this);
     parameters.addParameterListener(NAME_MOD, this);
-    parameters.addParameterListener(NAME_WF, this);
 
+    // default value for useless parameters
     delay.setFeedback(DEFAULT_FB);
-    //delay.setTime(DEFAULT_DT);
-    drywetter.setDryWetRatio(DEFAULT_DW);
-    LFO.setFrequency(DEFAULT_FREQ);
     LFO.setWaveform(DEFAULT_WF);
+
+    //delay.setTime(DEFAULT_DT);
+    drywet.setDryWetRatio(DEFAULT_DW);
+    LFO.setFrequency(DEFAULT_FREQ);
     timeAdapter.setModAmount(DEFAULT_MOD);
     timeAdapter.setParameter(DEFAULT_DT);
 }
 
-Chorus_effectAudioProcessor::~Chorus_effectAudioProcessor()
-{
-}
+Chorus_effectAudioProcessor::~Chorus_effectAudioProcessor() {}
 
 //==============================================================================
 void Chorus_effectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    drywetter.prepareToPlay(sampleRate, samplesPerBlock);
+    drywet.prepareToPlay(sampleRate, samplesPerBlock);
     delay.prepareToPlay(sampleRate, samplesPerBlock);
     LFO.prepareToPlay(sampleRate);
     modulationSignal.setSize(2, samplesPerBlock);
@@ -37,7 +35,7 @@ void Chorus_effectAudioProcessor::prepareToPlay (double sampleRate, int samplesP
 
 void Chorus_effectAudioProcessor::releaseResources()
 {
-    drywetter.releaseResources();
+    drywet.releaseResources();
     delay.releaseResurces();
     modulationSignal.setSize(0, 0);
 }
@@ -54,14 +52,14 @@ void Chorus_effectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     timeAdapter.processBlock(modulationSignal, numSamples);
 
     // Salvo il segnale in input pulito
-    drywetter.setDry(buffer);
+    drywet.setDry(buffer);
 
     // Applicare delay
     //delay.processBlock(buffer);
     delay.processBlock(buffer, modulationSignal);
     
     // Miscelo il segnale pulito salvato in drywetter con quello processato da delay
-    drywetter.merge(buffer);
+    drywet.merge(buffer);
 
     // ~~~ Listen to the wavez ~~~
     //LFO.getNextAudioBlock(buffer, buffer.getNumSamples());
@@ -73,7 +71,6 @@ juce::AudioProcessorEditor* Chorus_effectAudioProcessor::createEditor()
     return nullptr;//new PluginEditor(*this, parameters);
 }
 
-//==============================================================================
 void Chorus_effectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     auto state = parameters.copyState();
@@ -92,27 +89,19 @@ void Chorus_effectAudioProcessor::setStateInformation (const void* data, int siz
 void Chorus_effectAudioProcessor::parameterChanged(const String& paramID, float newValue)
 {
     if (paramID == NAME_DW)
-        drywetter.setDryWetRatio(newValue);
+        drywet.setDryWetRatio(newValue);
 
     if (paramID == NAME_DT)
         timeAdapter.setParameter(newValue);
         //delay.setTime(newValue);
-
-    if (paramID == NAME_FB)
-        delay.setFeedback(newValue);
 
     if (paramID == NAME_FREQ)
         LFO.setFrequency(newValue);
 
     if (paramID == NAME_MOD)
         timeAdapter.setModAmount(newValue);
-
-    if (paramID == NAME_WF)
-        LFO.setWaveform(newValue);
 }
 
-//==============================================================================
-// This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new Chorus_effectAudioProcessor();

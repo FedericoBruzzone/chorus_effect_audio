@@ -70,7 +70,7 @@ public:
 
 private:
 
-	int waveform = 0; // Un enum sarebbe stato meglio, ma per ora teniamo le cose semplici
+	int waveform = 0; 
 
 	double samplePeriod = 1.0;
 	float currentPhase = 0.0f;

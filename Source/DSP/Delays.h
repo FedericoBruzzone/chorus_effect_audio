@@ -158,23 +158,12 @@ private:
 
 			for (int ch = 0; ch < numChannels; ++ch)
 			{
-				// Leggo dal buufer del delay
-				 
-					// NO INTERPOLATION
-					//auto sampleValue = delayData[ch][integerPart]; 
+				auto sampleValue = alpha * (delayData[ch][B] - oldSample[ch]) + delayData[ch][A];
+				oldSample[ch] = sampleValue;
 
-					// LINEAR INTERPOLATION
-					//auto sampleValue = delayData[ch][A] * (1.0 - fractionalPart) +
-					//				   delayData[ch][B] * fractionalPart;
-
-					// ALLPASS FILTER
-					auto sampleValue = alpha * (delayData[ch][B] - oldSample[ch]) + delayData[ch][A];
-					oldSample[ch] = sampleValue;
-
-				// Scrivo sul buffer di output
+				
 				outputData[ch][smp] = sampleValue;
 
-				// Scrivo sul delay buffer il feedback
 				delayData[ch][actualWriteIndex] += sampleValue * fb;
 			}
 		}
@@ -216,7 +205,6 @@ private:
 
 	void moveDelayedTo(AudioBuffer<float>& buffer) override
 	{
-		// If you reach this assertion you're trying to use the wrong overload
 		jassertfalse;
 	}
 
@@ -249,23 +237,11 @@ private:
 
 				const auto alpha = fractionalPart / (2.0f - fractionalPart);
 
-				// Leggo dal buufer del delay
-
-					// NO INTERPOLATION
-					//auto sampleValue = delayData[ch][integerPart]; 
-
-					// LINEAR INTERPOLATION
-					//auto sampleValue = delayData[ch][A] * (1.0 - fractionalPart) +
-					//				   delayData[ch][B] * fractionalPart;
-
-					// ALLPASS FILTER
 				auto sampleValue = alpha * (delayData[ch][B] - oldSample[ch]) + delayData[ch][A];
 				oldSample[ch] = sampleValue;
 
-				// Scrivo sul buffer di output
 				outputData[ch][smp] = sampleValue;
 
-				// Scrivo sul delay buffer il feedback
 				delayData[ch][actualWriteIndex] += sampleValue * fb;
 			}
 		}
