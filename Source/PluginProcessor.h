@@ -47,7 +47,6 @@ private:
 
     DryWet drywet;
     ModDelay delay;
-    
     NaiveOscillator LFO;
     ParametrModulation timeAdapter;
 

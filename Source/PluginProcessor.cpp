@@ -16,9 +16,9 @@ Chorus_effectAudioProcessor::Chorus_effectAudioProcessor()
 
     //delay.setTime(DEFAULT_DT);
     drywet.setDryWetRatio(DEFAULT_DW);
+    timeAdapter.setParameter(DEFAULT_DT);
     LFO.setFrequency(DEFAULT_FREQ);
     timeAdapter.setModAmount(DEFAULT_MOD);
-    timeAdapter.setParameter(DEFAULT_DT);
 }
 
 Chorus_effectAudioProcessor::~Chorus_effectAudioProcessor() {}
@@ -45,24 +45,11 @@ void Chorus_effectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     juce::ScopedNoDenormals noDenormals;
     const auto numSamples = buffer.getNumSamples();
 
-    // Genero una modulante
     LFO.getNextAudioBlock(modulationSignal, numSamples);
-
-    // Scalare modulante
     timeAdapter.processBlock(modulationSignal, numSamples);
-
-    // Salvo il segnale in input pulito
     drywet.setDry(buffer);
-
-    // Applicare delay
-    //delay.processBlock(buffer);
     delay.processBlock(buffer, modulationSignal);
-    
-    // Miscelo il segnale pulito salvato in drywetter con quello processato da delay
     drywet.merge(buffer);
-
-    // ~~~ Listen to the wavez ~~~
-    //LFO.getNextAudioBlock(buffer, buffer.getNumSamples());
 }
 
 
@@ -93,7 +80,6 @@ void Chorus_effectAudioProcessor::parameterChanged(const String& paramID, float 
 
     if (paramID == NAME_DT)
         timeAdapter.setParameter(newValue);
-        //delay.setTime(newValue);
 
     if (paramID == NAME_FREQ)
         LFO.setFrequency(newValue);
