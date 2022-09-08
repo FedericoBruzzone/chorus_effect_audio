@@ -38,7 +38,8 @@ typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class PluginEditor  : public juce::AudioProcessorEditor
+class PluginEditor  : public juce::AudioProcessorEditor,
+                      public juce::Slider::Listener
 {
 public:
     //==============================================================================
@@ -51,17 +52,22 @@ public:
 
     void paint (juce::Graphics& g) override;
     void resized() override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
 
 
 private:
-    //[UserVariables]   -- You can add your own custom variables in this section.s
+    //[UserVariables]   -- You can add your own custom variables in this section.
     Chorus_effectAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
 
     //[/UserVariables]
 
     //==============================================================================
+    std::unique_ptr<juce::Slider> depth;
+    std::unique_ptr<juce::Slider> drywet;
+    std::unique_ptr<juce::Slider> rate;
+    std::unique_ptr<juce::Slider> delayTime;
 
 
     //==============================================================================

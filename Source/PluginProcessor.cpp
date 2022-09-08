@@ -1,6 +1,6 @@
 #include "PluginProcessor.h"
 #include "Parameters.h"
-//#include "PluginEditor.h"
+#include "GUI/PluginEditor.h"
 
 Chorus_effectAudioProcessor::Chorus_effectAudioProcessor()
     : parameters(*this, nullptr, "DelayFXParameters", Parameters::createParameterLayout())
@@ -55,7 +55,7 @@ void Chorus_effectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
 
 juce::AudioProcessorEditor* Chorus_effectAudioProcessor::createEditor()
 {
-    return nullptr;//new PluginEditor(*this, parameters);
+    return new PluginEditor(*this, parameters);
 }
 
 void Chorus_effectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)

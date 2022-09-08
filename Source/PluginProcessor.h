@@ -19,7 +19,7 @@ public:
 
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
-    bool hasEditor() const override { return false; }
+    bool hasEditor() const override { return true; }
 
     //==============================================================================
     const juce::String getName() const override { return JucePlugin_Name; }
