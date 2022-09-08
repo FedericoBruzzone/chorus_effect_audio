@@ -12,10 +12,10 @@
       <FILE id="HDUq8W" name="Oscillators.h" compile="0" resource="0" file="Source/DSP/Oscillators.h"/>
     </GROUP>
     <GROUP id="{22712241-DCBA-0D48-A634-0011F903F93C}" name="GUI">
-      <FILE id="WLRflS" name="MyTheme.h" compile="0" resource="0" file="Source/GUI/MyTheme.h"/>
-      <FILE id="WTVzI2" name="PluginEditor.cpp" compile="1" resource="0"
+      <FILE id="PiZc6A" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/GUI/PluginEditor.cpp"/>
-      <FILE id="hG8E1h" name="PluginEditor.h" compile="0" resource="0" file="Source/GUI/PluginEditor.h"/>
+      <FILE id="GbXltf" name="PluginEditor.h" compile="0" resource="0" file="Source/GUI/PluginEditor.h"/>
+      <FILE id="WLRflS" name="MyTheme.h" compile="0" resource="0" file="Source/GUI/MyTheme.h"/>
     </GROUP>
     <FILE id="KMDcBc" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
     <FILE id="PFKwbp" name="PluginProcessor.cpp" compile="1" resource="0"
