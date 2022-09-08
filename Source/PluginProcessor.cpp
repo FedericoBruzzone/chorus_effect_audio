@@ -3,7 +3,7 @@
 #include "GUI/PluginEditor.h"
 
 Chorus_effectAudioProcessor::Chorus_effectAudioProcessor()
-    : parameters(*this, nullptr, "DelayFXParameters", Parameters::createParameterLayout())
+    : parameters(*this, nullptr, "Chorus_effectParameters", Parameters::createParameterLayout())
 {
     parameters.addParameterListener(NAME_DW, this);
     parameters.addParameterListener(NAME_DT, this);

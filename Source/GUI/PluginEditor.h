@@ -25,7 +25,7 @@
 #include "MyTheme.h"
 
 typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
-typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
+// typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 //[/Headers]
 
 
@@ -58,9 +58,14 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    MyLookAndFeel myLookAndFeel;
     Chorus_effectAudioProcessor& processor;
     AudioProcessorValueTreeState& valueTreeState;
 
+    std::unique_ptr<SliderAttachment> depth_attachment;
+    std::unique_ptr<SliderAttachment> drywet_attachment;
+    std::unique_ptr<SliderAttachment> rate_attachment;
+    std::unique_ptr<SliderAttachment> delayTime_attachment;
     //[/UserVariables]
 
     //==============================================================================
