@@ -6,7 +6,7 @@
 [![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)](https://github.com/emersion/stability-badges#stable)
 
 
-<img src="./Docs/Shimmer_VST3.png" width="600" heigth="600"/>
+<img src="./Docs/chorus_effect_VST3.png" width="400" heigth="400"/>
 
 # Introduction
 The chorus effect is by far one of the most popular phase modulation effects used in music. 
@@ -45,4 +45,4 @@ If you find problems with the source code or configuration, please contact me at
 If this is your first time using juce, i understand that the configuration of this project is not easy.
 
 # Full screen GUI
-![Shimmer_VST3](./Docs/Shimmer_VST3.png)
+![Shimmer_VST3](./Docs/chorus_effect_VST3.png)
