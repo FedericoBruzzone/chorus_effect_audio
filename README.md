@@ -22,7 +22,7 @@ The chorus effect is by far one of the most popular phase modulation effects use
 ---
 
 ### First step
-Now, you can try to open the Projucer.exe and open shimmer.jucer file. If there are no problems, you can run Visual Studio 2022 from the appropriate button at the top-right of Projucer.
+Now, you can try to open the Projucer.exe and open chorus_effect.jucer file. If there are no problems, you can run Visual Studio 2022 from the appropriate button at the top-right of Projucer.
 
 ### Second step
 
@@ -32,9 +32,9 @@ You have to open AudioPluginHost.jucer on Projucer and later in Visual Studio 20
 
 ### Third step
 
-Now, you can re-open the "Shimmer" project, and pressing with the right button on "Shimmer_VST3" and in debug menu you can set the path of your AudioPluginHost (.\Documents\JUCE\extras\AudioPluginHost\Builds\VisualStudio2022\x64\Debug\App\AudioPluginHost.exw) on command space.
+Now, you can re-open the "Chorus" project, and pressing with the right button on "chorus_effect_VST3" and in debug menu you can set the path of your AudioPluginHost (.\Documents\JUCE\extras\AudioPluginHost\Builds\VisualStudio2022\x64\Debug\App\AudioPluginHost.exw) on command space.
 
-And, pressing with the right button on "Shimmer_VST3" another time, and click
+And, pressing with the right button on "chorus_effect_VST3" another time, and click
 "Set as Sturtup project".
 
 Now, try to run the Shimmer with Local Windows Debugger button.
