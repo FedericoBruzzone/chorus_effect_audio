@@ -24,6 +24,11 @@ public:
 		waveform = roundToInt(newValue);
 	}
 
+	void setPhaseDelta(float newValue)
+	{
+		phaseDelta = newValue;
+	}
+
 	void getNextAudioBlock(AudioBuffer<float>& buffer, const int numSamples)
 	{
 		const int numCh = buffer.getNumChannels();
@@ -31,39 +36,42 @@ public:
 
 		for (int smp = 0; smp < numSamples; ++smp)
 		{
-			const auto sampleValue = getNextAudioSample();
+			bufferData[0][smp] = getNextAudioSample(0);
+			bufferData[1][smp] = getNextAudioSample(phaseDelta);
 
-			for (int ch = 0; ch < numCh; ++ch)
-				bufferData[ch][smp] = sampleValue;
+			phaseIncrement = frequency.getNextValue() * samplePeriod;
+			currentPhase += phaseIncrement;
+			currentPhase -= static_cast<int>(currentPhase);
+				
 		}
 	}
 
-	float getNextAudioSample()
+	float getNextAudioSample(const float delta)
 	{
 		auto sampleValue = 0.0f;
+		float phase = currentPhase + delta;
 
 		switch (waveform)
 		{
 		case 0: // Sine
-			sampleValue = sin(MathConstants<float>::twoPi * currentPhase);
+			sampleValue = sin(MathConstants<float>::twoPi * phase);
 			break;
 		case 1: // Triangular
-			sampleValue = 4.0f * abs(currentPhase - 0.5f) - 1.0f;
+			sampleValue = 4.0f * abs(phase - 0.5f) - 1.0f;
 			break;
 		case 2: // Saw up
-			sampleValue = 2.0f * currentPhase - 1.0f;
+			sampleValue = 2.0f * phase - 1.0f;
 			break;
 		case 3: // Saw down
-			sampleValue = -2.0f * currentPhase - 1.0f;
+			sampleValue = -2.0f * phase - 1.0f;
 			break;
 		default:
 			break;
 		}
 
-		//phaseIncrement = frequency.isSmoothing() ? frequency.getNextValue() * samplePeriod : phaseIncrement;
-		phaseIncrement = frequency.getNextValue() * samplePeriod;
+		/*phaseIncrement = frequency.getNextValue() * samplePeriod;
 		currentPhase += phaseIncrement;
-		currentPhase -= static_cast<int>(currentPhase);
+		currentPhase -= static_cast<int>(currentPhase);*/
 
 		return sampleValue;
 	}
@@ -75,6 +83,7 @@ private:
 	double samplePeriod = 1.0;
 	float currentPhase = 0.0f;
 	float phaseIncrement = 0.0f;
+	float phaseDelta = 0.0f;
 	SmoothedValue<float, ValueSmoothingTypes::Multiplicative> frequency;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NaiveOscillator)

@@ -13,6 +13,7 @@ public:
 		sr = sampleRate;
 		memorySize = roundToInt(MAX_DELAY_TIME * sampleRate) + maxNumSamples;
 		delayMemory.setSize(2, memorySize);
+		delayMemory.clear();
 		initialize();
 	}
 

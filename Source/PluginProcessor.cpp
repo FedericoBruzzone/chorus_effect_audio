@@ -13,6 +13,7 @@ Chorus_effectAudioProcessor::Chorus_effectAudioProcessor()
     // default value for useless parameters
     delay.setFeedback(DEFAULT_FB);
     LFO.setWaveform(DEFAULT_WF);
+    LFO.setPhaseDelta(DEFAULT_FD);
 
     //delay.setTime(DEFAULT_DT);
     drywet.setDryWetRatio(DEFAULT_DW);

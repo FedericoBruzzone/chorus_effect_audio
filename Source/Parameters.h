@@ -26,6 +26,7 @@
 #define DEFAULT_FREQ 0.5f
 #define DEFAULT_MOD 0.0f
 #define DEFAULT_WF 0
+#define DEFAULT_FD 0.5f
 
 namespace Parameters
 {
